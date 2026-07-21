@@ -3,274 +3,446 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>教育コンテンツ一覧</title>
+<title>edu — 教育コンテンツ一覧</title>
 <style>
-* {
-  box-sizing: border-box;
-}
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
-  background: #0d1117;
-  color: #c9d1d9;
-  margin: 0;
-  padding: 24px;
-}
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-}
-h1 {
-  font-size: 20px;
-  color: #e6edf3;
-  margin-bottom: 4px;
-}
-.subtitle {
-  color: #8b949e;
-  font-size: 13px;
-  margin-bottom: 20px;
-  word-break: break-all;
-}
-.status {
-  font-size: 13px;
-  color: #8b949e;
-  margin-bottom: 12px;
-  min-height: 18px;
-}
-.status.error {
-  color: #f85149;
-}
-.tree {
-  border: 1px solid #30363d;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.entry {
-  display: flex;
-  align-items: center;
-  padding: 8px 12px;
-  border-bottom: 1px solid #21262d;
-  font-size: 14px;
-}
-.entry:last-child {
-  border-bottom: none;
-}
-.entry:hover {
-  background: #161b22;
-}
-.entry .icon {
-  width: 22px;
-  flex-shrink: 0;
-  text-align: center;
-}
-.entry .name {
-  flex: 1;
-  word-break: break-all;
-  cursor: pointer;
-}
-.entry.dir .name {
-  color: #58a6ff;
-}
-.entry a.name {
-  color: #c9d1d9;
-  text-decoration: none;
-}
-.entry a.name:hover {
-  text-decoration: underline;
-}
-.entry .meta {
-  color: #8b949e;
-  font-size: 12px;
-  margin-left: 8px;
-  flex-shrink: 0;
-}
-.children {
-  display: none;
-}
-.children.open {
-  display: block;
-}
-.breadcrumbs {
-  font-size: 13px;
-  margin-bottom: 10px;
-  color: #8b949e;
-}
-.breadcrumbs a {
-  color: #58a6ff;
-  text-decoration: none;
-  cursor: pointer;
-}
-.breadcrumbs a:hover {
-  text-decoration: underline;
-}
-.spinner {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border: 2px solid #30363d;
-  border-top-color: #58a6ff;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  margin-right: 6px;
-  vertical-align: middle;
-}
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+  :root{
+    --blue-deep:#0a2f52;
+    --blue-mid:#0f3d68;
+    --blue-line:#5aa9d6;
+    --blue-line-soft:#3a7ba8;
+    --paper:#eaf2f8;
+    --amber:#e8a33d;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    background:var(--blue-mid);
+    background-image:
+      linear-gradient(var(--blue-line-soft) 1px, transparent 1px),
+      linear-gradient(90deg, var(--blue-line-soft) 1px, transparent 1px);
+    background-size:40px 40px;
+    background-position:-1px -1px;
+    color:var(--paper);
+    font-family:'Courier New', 'Consolas', monospace;
+    min-height:100vh;
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+    overflow-x:hidden;
+  }
+  .sheet{
+    position:relative;
+    width:min(920px, 92vw);
+    margin:32px auto;
+    border:2px solid var(--blue-line);
+    padding:clamp(20px, 4vw, 56px);
+    background:rgba(10,47,82,0.55);
+  }
+  .corner-tr, .corner-bl, .sheet::before, .sheet::after{
+    content:"";
+    position:absolute;
+    width:26px;
+    height:26px;
+    border:2px solid var(--amber);
+  }
+  .sheet::before{ top:-2px; left:-2px; border-right:none; border-bottom:none; }
+  .sheet::after{ bottom:-2px; right:-2px; border-left:none; border-top:none; }
+  .corner-tr{ top:-2px; right:-2px; border-left:none; border-bottom:none; }
+  .corner-bl{ bottom:-2px; left:-2px; border-right:none; border-top:none; }
+  .eyebrow{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-size:clamp(10px, 1.4vw, 13px);
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--blue-line);
+    border-bottom:1px dashed var(--blue-line-soft);
+    padding-bottom:14px;
+    margin-bottom:clamp(24px, 5vw, 40px);
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .eyebrow span:first-child{color:var(--amber);}
+  .title-block h1{
+    font-size:clamp(20px, 3.2vw, 30px);
+    font-weight:400;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin:0 0 8px;
+    color:var(--paper);
+  }
+  .title-block p{
+    font-size:clamp(12px, 1.8vw, 14px);
+    line-height:1.7;
+    color:var(--blue-line);
+    margin:0 0 24px;
+    max-width:60ch;
+  }
+  .measure{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:24px;
+  }
+  .measure .tick{
+    flex:1;
+    height:1px;
+    background:var(--blue-line-soft);
+    position:relative;
+  }
+  .measure .tick::before,
+  .measure .tick::after{
+    content:"";
+    position:absolute;
+    top:-4px;
+    width:1px;
+    height:9px;
+    background:var(--blue-line-soft);
+  }
+  .measure .tick::before{left:0;}
+  .measure .tick::after{right:0;}
+
+  .status{
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--amber);
+    margin-bottom:16px;
+    min-height:1.4em;
+  }
+
+  .tree{
+    font-size:13px;
+    line-height:1.9;
+    border:1px solid var(--blue-line-soft);
+    padding:14px 10px;
+    max-height:60vh;
+    overflow-y:auto;
+    background:rgba(10,47,82,0.35);
+  }
+  .tree ul{
+    list-style:none;
+    margin:0;
+    padding-left:20px;
+  }
+  .tree > ul{ padding-left:4px; }
+  .empty-msg{
+    color:var(--blue-line);
+    font-size:13px;
+    letter-spacing:0.06em;
+    padding:8px 6px;
+  }
+  .tree li{ position:relative; }
+  .node{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    padding:2px 6px;
+    color:var(--paper);
+    text-decoration:none;
+    white-space:nowrap;
+  }
+  .node:hover{
+    background:var(--blue-line);
+    color:var(--blue-deep);
+  }
+  .node .icon{
+    color:var(--amber);
+    width:14px;
+    display:inline-block;
+    text-align:center;
+    flex-shrink:0;
+  }
+  .node.folder .icon::before{ content:"▸"; }
+  .node.folder.open .icon::before{ content:"▾"; }
+  .node.file .icon::before{ content:"·"; }
+  .node .name{ overflow:hidden; text-overflow:ellipsis; }
+  .children{ display:none; }
+  .children.open{ display:block; }
+
+  .actions{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-top:24px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:11px 20px;
+    border:1px solid var(--blue-line);
+    color:var(--paper);
+    text-decoration:none;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    background:transparent;
+    transition:background 0.15s ease, color 0.15s ease;
+    cursor:pointer;
+  }
+  .btn:hover{
+    background:var(--blue-line);
+    color:var(--blue-deep);
+  }
+  .btn.primary{
+    border-color:var(--amber);
+    color:var(--amber);
+  }
+  .btn.primary:hover{
+    background:var(--amber);
+    color:var(--blue-deep);
+  }
+  .btn::before{content:"›";}
+
+  .footer-row{
+    margin-top:clamp(28px, 6vw, 44px);
+    padding-top:16px;
+    border-top:1px dashed var(--blue-line-soft);
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--blue-line-soft);
+  }
+  .footer-row strong{
+    color:var(--amber);
+    font-weight:400;
+  }
+  .crosshair{
+    position:absolute;
+    width:14px;
+    height:14px;
+    opacity:0.6;
+  }
+  .crosshair::before,
+  .crosshair::after{
+    content:"";
+    position:absolute;
+    background:var(--blue-line);
+  }
+  .crosshair::before{
+    top:50%; left:0; width:100%; height:1px; transform:translateY(-50%);
+  }
+  .crosshair::after{
+    left:50%; top:0; height:100%; width:1px; transform:translateX(-50%);
+  }
+  .ch-1{top:10px; left:10px;}
+  .ch-2{top:10px; right:10px;}
+  .ch-3{bottom:10px; left:10px;}
+  .ch-4{bottom:10px; right:10px;}
+
+  @media (max-width:520px){
+    .eyebrow{flex-direction:column; align-items:flex-start; gap:6px;}
+    .footer-row{flex-direction:column;}
+  }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>教育コンテンツ一覧</h1>
+<div class="sheet">
+  <div class="corner-tr"></div>
+  <div class="corner-bl"></div>
+  <div class="crosshair ch-1"></div>
+  <div class="crosshair ch-2"></div>
+  <div class="crosshair ch-3"></div>
+  <div class="crosshair ch-4"></div>
 
-  <div class="status" id="status"></div>
+  <div class="eyebrow">
+    <span>LuckyBear-Teams / edu</span>
+    <span id="branchLabel">branch: —</span>
+  </div>
+
+  <div class="title-block">
+    <h1>教育コンテンツ一覧</h1>
+    <p>クリックでコンテンツを表示します</p>
+  </div>
+
+  <div class="measure"><span class="tick"></span></div>
+
+  <div class="status" id="status">読み込み中…</div>
 
   <div class="tree" id="tree"></div>
+
+  <div class="actions">
+    <a class="btn primary" href="/edu/">ホームに戻る</a>
+    <button class="btn" id="reloadBtn">再読み込み</button>
+  </div>
+
+  <div class="footer-row">
+    <span><strong>Lucky Bear</strong></span>
+    <span id="countLabel"></span>
+  </div>
 </div>
 
 <script>
-var OWNER = "luckybear-teams";
-var REPO = "edu";
-var API_BASE = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/contents/";
-var PAGES_BASE = "https://" + OWNER + ".github.io/" + REPO + "/";
+(function(){
+  var OWNER = "LuckyBear-Teams";
+  var REPO = "edu";
+  var PAGES_BASE = "/edu/";
 
-var statusEl = document.getElementById("status");
-var treeEl = document.getElementById("tree");
+  var statusEl = document.getElementById("status");
+  var treeEl = document.getElementById("tree");
+  var branchLabel = document.getElementById("branchLabel");
+  var countLabel = document.getElementById("countLabel");
+  var reloadBtn = document.getElementById("reloadBtn");
 
-function setStatus(msg, isError) {
-  statusEl.textContent = msg;
-  statusEl.className = isError ? "status error" : "status";
-}
+  function setStatus(msg){ statusEl.textContent = msg; }
 
-function iconFor(item) {
-  if (item.type === "dir") return "📁";
-  var name = item.name.toLowerCase();
-  if (name.match(/\.(png|jpg|jpeg|gif|svg|webp|ico)$/)) return "🖼️";
-  if (name.match(/\.(html|htm)$/)) return "🌐";
-  if (name.match(/\.(js|ts|jsx|tsx)$/)) return "📜";
-  if (name.match(/\.(css|scss|less)$/)) return "🎨";
-  if (name.match(/\.(md|txt)$/)) return "📝";
-  if (name.match(/\.(json|yml|yaml|xml)$/)) return "⚙️";
-  if (name.match(/\.(zip|tar|gz|rar)$/)) return "🗜️";
-  if (name.match(/\.(pdf)$/)) return "📕";
-  return "📄";
-}
-
-function formatSize(bytes) {
-  if (bytes === undefined || bytes === null) return "";
-  if (bytes < 1024) return bytes + " B";
-  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-  return (bytes / (1024 * 1024)).toFixed(1) + " MB";
-}
-
-async function fetchContents(path) {
-  var url = API_BASE + path;
-  var res = await fetch(url);
-  if (!res.ok) {
-    var body = null;
-    try { body = await res.json(); } catch (e) {}
-    var msg = "取得に失敗しました (" + res.status + ")";
-    if (body && body.message) msg += ": " + body.message;
-    throw new Error(msg);
-  }
-  return res.json();
-}
-
-function makeEntryRow(item, container) {
-  var row = document.createElement("div");
-  row.className = "entry" + (item.type === "dir" ? " dir" : "");
-
-  var icon = document.createElement("span");
-  icon.className = "icon";
-  icon.textContent = iconFor(item);
-  row.appendChild(icon);
-
-  if (item.type === "dir") {
-    var name = document.createElement("span");
-    name.className = "name";
-    name.textContent = item.name;
-    row.appendChild(name);
-
-    var meta = document.createElement("span");
-    meta.className = "meta";
-    row.appendChild(meta);
-
-    var childrenWrap = document.createElement("div");
-    childrenWrap.className = "children";
-    childrenWrap.style.paddingLeft = "20px";
-    var loaded = false;
-
-    row.addEventListener("click", async function () {
-      var isOpen = childrenWrap.classList.contains("open");
-      if (isOpen) {
-        childrenWrap.classList.remove("open");
-        icon.textContent = "📁";
-        return;
+  function apiFetch(url){
+    return fetch(url, {
+      headers: { "Accept": "application/vnd.github+json" }
+    }).then(function(res){
+      if(!res.ok){
+        return res.json().catch(function(){ return {}; }).then(function(body){
+          throw new Error("GitHub API error " + res.status + ": " + (body.message || res.statusText));
+        });
       }
-      icon.innerHTML = '<span class="spinner"></span>';
-      if (!loaded) {
-        try {
-          var items = await fetchContents(item.path);
-          items.sort(function (a, b) {
-            if (a.type !== b.type) return a.type === "dir" ? -1 : 1;
-            return a.name.localeCompare(b.name);
-          });
-          items.forEach(function (child) {
-            makeEntryRow(child, childrenWrap);
-          });
-          loaded = true;
-        } catch (err) {
-          setStatus(err.message, true);
+      return res.json();
+    });
+  }
+
+  function getDefaultBranch(){
+    return apiFetch("https://api.github.com/repos/" + OWNER + "/" + REPO)
+      .then(function(repo){ return repo.default_branch; });
+  }
+
+  var ROOT_EXCLUDE = ["404.html", "index.html"];
+
+  function getTree(branch){
+    return apiFetch("https://api.github.com/repos/" + OWNER + "/" + REPO + "/git/trees/" + branch + "?recursive=1")
+      .then(function(data){
+        if(data.truncated){
+          setStatus("注意: リポジトリが大きいため、一部のみ表示されています。");
         }
-      }
-      icon.textContent = "📁";
-      childrenWrap.classList.add("open");
-    });
-
-    container.appendChild(row);
-    container.appendChild(childrenWrap);
-  } else {
-    var link = document.createElement("a");
-    link.className = "name";
-    link.textContent = item.name;
-    link.href = PAGES_BASE + item.path;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    row.appendChild(link);
-
-    var meta2 = document.createElement("span");
-    meta2.className = "meta";
-    meta2.textContent = formatSize(item.size);
-    row.appendChild(meta2);
-
-    container.appendChild(row);
-  }
-}
-
-async function buildTree(path) {
-  treeEl.innerHTML = "";
-  setStatus("");
-  try {
-    var items = await fetchContents(path);
-    items = items.filter(function (item) {
-      return item.path !== "src" && item.path.indexOf("src/") !== 0;
-    });
-    items.sort(function (a, b) {
-      if (a.type !== b.type) return a.type === "dir" ? -1 : 1;
-      return a.name.localeCompare(b.name);
-    });
-    if (items.length === 0) {
-      setStatus("まだフォルダはありません");
-    } else {
-      items.forEach(function (item) {
-        makeEntryRow(item, treeEl);
+        return data.tree.filter(function(item){
+          return ROOT_EXCLUDE.indexOf(item.path) === -1;
+        });
       });
-    }
-  } catch (err) {
-    setStatus(err.message, true);
   }
-}
 
-buildTree("");
+  function buildHierarchy(items){
+    var root = { name: "", type: "tree", children: {}, path: "" };
+    items.forEach(function(item){
+      var parts = item.path.split("/");
+      var node = root;
+      var acc = "";
+      parts.forEach(function(part, idx){
+        acc = acc ? acc + "/" + part : part;
+        var isLeaf = (idx === parts.length - 1);
+        if(!node.children[part]){
+          node.children[part] = {
+            name: part,
+            path: acc,
+            type: isLeaf ? item.type : "tree",
+            children: {}
+          };
+        }
+        node = node.children[part];
+      });
+    });
+    return root;
+  }
+
+  function sortedEntries(childrenObj){
+    var arr = Object.keys(childrenObj).map(function(k){ return childrenObj[k]; });
+    arr.sort(function(a,b){
+      if(a.type === b.type) return a.name.localeCompare(b.name, "ja");
+      return a.type === "tree" ? -1 : 1;
+    });
+    return arr;
+  }
+
+  function pagesUrl(path){
+    return PAGES_BASE + path;
+  }
+
+  function renderNode(node){
+    var li = document.createElement("li");
+
+    if(node.type === "tree"){
+      var a = document.createElement("div");
+      a.className = "node folder";
+      a.innerHTML = '<span class="icon"></span><span class="name"></span>';
+      a.querySelector(".name").textContent = node.name;
+
+      var ul = document.createElement("ul");
+      ul.className = "children";
+      var entries = sortedEntries(node.children);
+      entries.forEach(function(child){
+        ul.appendChild(renderNode(child));
+      });
+
+      a.addEventListener("click", function(){
+        a.classList.toggle("open");
+        ul.classList.toggle("open");
+      });
+
+      li.appendChild(a);
+      li.appendChild(ul);
+    } else {
+      var link = document.createElement("a");
+      link.className = "node file";
+      link.href = pagesUrl(node.path);
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.innerHTML = '<span class="icon"></span><span class="name"></span>';
+      link.querySelector(".name").textContent = node.name;
+      li.appendChild(link);
+    }
+
+    return li;
+  }
+
+  function render(root, itemCount){
+    treeEl.innerHTML = "";
+
+    if(itemCount === 0){
+      var empty = document.createElement("div");
+      empty.className = "empty-msg";
+      empty.textContent = "ファイルはありません";
+      treeEl.appendChild(empty);
+      countLabel.textContent = "0 items";
+      return;
+    }
+
+    var ul = document.createElement("ul");
+    var entries = sortedEntries(root.children);
+    entries.forEach(function(child){
+      ul.appendChild(renderNode(child));
+    });
+    treeEl.appendChild(ul);
+    countLabel.textContent = itemCount + " items";
+  }
+
+  function load(){
+    setStatus("読み込み中…");
+    treeEl.innerHTML = "";
+    countLabel.textContent = "";
+    branchLabel.textContent = "branch: —";
+
+    getDefaultBranch()
+      .then(function(branch){
+        branchLabel.textContent = "branch: " + branch;
+        return getTree(branch);
+      })
+      .then(function(items){
+        var root = buildHierarchy(items);
+        render(root, items.length);
+        setStatus("読み込み完了");
+      })
+      .catch(function(err){
+        setStatus("エラー: " + err.message);
+      });
+  }
+
+  reloadBtn.addEventListener("click", load);
+  load();
+})();
 </script>
 </body>
 </html>
